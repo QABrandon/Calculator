@@ -1,46 +1,83 @@
-# Getting Started with Create React App
+# React Calculator with Quick Calculations
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern calculator built with React, TypeScript, and Material-UI that combines standard arithmetic operations with quick calculation features for common use cases.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### Standard Calculator
+- Basic arithmetic operations (addition, subtraction, multiplication, division)
+- Decimal number support
+- Clear function
+- Error handling for invalid expressions
+- Real-time equation display
+- Responsive design
 
-### `npm start`
+### Quick Calculations
+- **Tip Calculator**
+  - Calculate total amount including tip
+  - Customizable tip percentage
+  - Shows calculation breakdown
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Simple Interest Calculator**
+  - Calculate total amount with interest
+  - Input principal, rate, and time
+  - Displays interest calculation formula
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **BMI Calculator**
+  - Calculate Body Mass Index
+  - Input weight (kg) and height (cm)
+  - Shows BMI calculation formula
 
-### `npm test`
+## Technology Stack
+- React 18
+- TypeScript
+- Material-UI
+- mathjs (for calculations)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting Started
 
-### `npm run build`
+### Prerequisites
+- Node.js (v14 or higher)
+- npm (v6 or higher)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
+1. Clone the repository
+   ```bash
+   git clone [repository-url]
+   cd calculator
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies
+   ```bash
+   npm install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Start the development server
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Usage
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Basic Calculator
+- Use the number pad for input
+- Operators: +, -, ×, ÷
+- Press = to calculate
+- Press C to clear
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Quick Calculations
+1. Click on the desired quick calculation button (Tip, Interest, or BMI)
+2. Enter the required values in the modal
+3. Click Calculate to see the result
+4. The result and calculation formula will be displayed in the main calculator screen
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Learn More
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Version History
+See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
