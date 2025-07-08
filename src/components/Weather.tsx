@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
 
 interface WeatherData {
@@ -29,7 +29,7 @@ const Weather: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [city, setCity] = useState<string>('');
 
-  const fetchWeather = async (searchCity: string) => {
+  const fetchWeather = useCallback(async (searchCity: string) => {
     setLoading(true);
     setError('');
     try {
@@ -46,15 +46,15 @@ const Weather: React.FC = () => {
 
       const geoData: GeocodingData[] = await geoResponse.json();
       
-      if (!geoData.length) {
+      if (geoData.length === 0) {
         throw new Error('City not found');
       }
 
-      console.log(`Fetching weather for ${geoData[0].name} at coordinates: ${geoData[0].lat}, ${geoData[0].lon}`);
+      const { lat, lon } = geoData[0];
 
-      // Use coordinates to get weather data
+      // Then get weather data using coordinates
       const weatherResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${geoData[0].lat}&lon=${geoData[0].lon}&appid=${API_KEY}&units=imperial&lang=en`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial&lang=en`
       );
 
       if (!weatherResponse.ok) {
@@ -62,30 +62,46 @@ const Weather: React.FC = () => {
       }
 
       const weatherData = await weatherResponse.json();
-      console.log('Weather data received:', weatherData);
-      setWeather(weatherData);
-      setCity('');
+      setWeather({
+        main: {
+          temp: weatherData.main.temp,
+          humidity: weatherData.main.humidity
+        },
+        weather: [{
+          description: weatherData.weather[0].description,
+          icon: weatherData.weather[0].icon
+        }],
+        name: geoData[0].local_names?.en || geoData[0].name
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error fetching weather:', err);
     } finally {
       setLoading(false);
     }
-  };
-
-  // Test function to check both cities
-  const testCities = async () => {
-    console.log('Testing Pensacola, FL and Pittsburgh, PA...');
-    await fetchWeather('Pensacola,FL,US');
-    setTimeout(async () => {
-      await fetchWeather('Pittsburgh,PA,US');
-    }, 2000);
-  };
+  }, []);
 
   useEffect(() => {
-    // Test both cities on component mount
-    testCities();
-  }, []);
+    // Fetch weather for San Francisco by default
+    fetchWeather('San Francisco');
+  }, [fetchWeather]);
+
+  // Add test cities effect
+  useEffect(() => {
+    const testCities = ['Pensacola,FL,US', 'Pittsburgh,PA,US'];
+    let currentIndex = 0;
+
+    const testNextCity = () => {
+      if (currentIndex < testCities.length) {
+        fetchWeather(testCities[currentIndex]);
+        currentIndex++;
+      }
+    };
+
+    testNextCity();
+    const interval = setInterval(testNextCity, 2000);
+
+    return () => clearInterval(interval);
+  }, [fetchWeather]); // Add fetchWeather as a dependency
 
   const handleSearch = () => {
     if (city.trim()) {
