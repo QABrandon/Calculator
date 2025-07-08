@@ -89,3 +89,21 @@ All notable changes to this project will be documented in this file.
 - Updated Weather component to use OpenWeatherMap's Geocoding API
 - Enhanced error handling for city searches
 - Improved UI layout and responsiveness 
+
+## [2.1.0] - 2024-03-21
+
+### Changed
+- Improved code quality in Weather component
+- Added proper dependency management with useCallback
+- Removed console.log statements
+- Fixed TypeScript warnings and linting issues
+- Cleaned up duplicate files from project structure
+
+### Fixed
+- Weather component useEffect dependencies
+- Memory leaks in test cities interval
+- TypeScript type definitions
+
+## [2.0.0] - 2024-03-21
+
+// ... existing changelog entries ... 
