@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Container, Paper, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Box, Container, Paper, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack } from '@mui/material';
 import { evaluate } from 'mathjs';
 import './App.css';
+import Weather from './components/Weather';
 
 interface QuickCalcDialog {
   open: boolean;
-  type: 'tip' | 'interest' | 'bmi' | null;
+  type: 'tip' | 'interest' | 'bmi' | 'heat-index' | null;
 }
 
 const App: React.FC = () => {
@@ -21,7 +22,9 @@ const App: React.FC = () => {
     rate: '',
     time: '',
     weight: '',
-    height: ''
+    height: '',
+    temperature: '',
+    humidity: ''
   });
 
   const handleNumber = (num: string) => {
@@ -99,7 +102,7 @@ const App: React.FC = () => {
     setLastWasOperator(false);
   };
 
-  const handleQuickCalcOpen = (type: 'tip' | 'interest' | 'bmi') => {
+  const handleQuickCalcOpen = (type: 'tip' | 'interest' | 'bmi' | 'heat-index') => {
     setDialog({ open: true, type });
   };
 
@@ -112,7 +115,9 @@ const App: React.FC = () => {
       rate: '',
       time: '',
       weight: '',
-      height: ''
+      height: '',
+      temperature: '',
+      humidity: ''
     });
   };
 
@@ -156,6 +161,29 @@ const App: React.FC = () => {
     const bmi = weight / ((height / 100) * (height / 100));
     setDisplay(bmi.toFixed(1));
     setEquation(`${weight} ÷ (${height}/100)²`);
+    handleQuickCalcClose();
+  };
+
+  const calculateHeatIndex = () => {
+    const temperature = parseFloat(quickCalcInputs.temperature);
+    const humidity = parseFloat(quickCalcInputs.humidity);
+    if (isNaN(temperature) || isNaN(humidity)) return;
+
+    // Heat Index formula (Rothfusz regression)
+    const t = temperature;
+    const r = humidity;
+    const heatIndex = -42.379 +
+                     (2.04901523 * t) +
+                     (10.14333127 * r) +
+                     (-0.22475541 * t * r) +
+                     (-0.00683783 * t * t) +
+                     (-0.05481717 * r * r) +
+                     (0.00122874 * t * t * r) +
+                     (0.00085282 * t * r * r) +
+                     (-0.00000199 * t * t * r * r);
+    
+    setDisplay(heatIndex.toFixed(1));
+    setEquation(`Heat Index for ${t}°F at ${r}% humidity`);
     handleQuickCalcClose();
   };
 
@@ -235,6 +263,31 @@ const App: React.FC = () => {
             />
           </>
         );
+      case 'heat-index':
+        return (
+          <>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Temperature (°F)"
+              type="number"
+              fullWidth
+              value={quickCalcInputs.temperature}
+              onChange={handleInputChange('temperature')}
+            />
+            <TextField
+              margin="dense"
+              label="Relative Humidity (%)"
+              type="number"
+              fullWidth
+              value={quickCalcInputs.humidity}
+              onChange={handleInputChange('humidity')}
+            />
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+              Calculates how hot it feels based on temperature and humidity.
+            </Typography>
+          </>
+        );
       default:
         return null;
     }
@@ -250,6 +303,9 @@ const App: React.FC = () => {
         break;
       case 'bmi':
         calculateBMI();
+        break;
+      case 'heat-index':
+        calculateHeatIndex();
         break;
     }
   };
@@ -274,108 +330,123 @@ const App: React.FC = () => {
   ];
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: 2,
-          backgroundColor: '#f5f5f5',
-          borderRadius: 2
-        }}
-      >
-        <Box 
-          sx={{ 
-            mb: 2, 
-            p: 2, 
-            backgroundColor: 'white',
-            borderRadius: 1,
-            minHeight: '60px'
-          }}
-        >
-          <Typography variant="h4" align="right" sx={{ wordBreak: 'break-all' }}>
-            {display}
-          </Typography>
-          <Typography variant="caption" align="right" display="block" color="text.secondary">
-            {equation}
-          </Typography>
-        </Box>
-        <Box sx={{ width: '100%' }}>
-          <Button 
-            fullWidth 
-            variant="contained" 
-            onClick={handleClear}
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
+        <Box sx={{ flex: { xs: '1', md: '2' } }}>
+          <Paper 
+            elevation={3} 
             sx={{ 
-              mb: 1,
-              backgroundColor: '#ff9800',
-              '&:hover': {
-                backgroundColor: '#f57c00'
-              }
+              p: 2,
+              backgroundColor: '#f5f5f5',
+              borderRadius: 2
             }}
           >
-            Clear
-          </Button>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 1,
-              mb: 2
-            }}
-          >
-            {buttons.map((button, index) => (
-              <Button
-                key={index}
-                fullWidth
-                variant="contained"
-                onClick={button.handler}
-                sx={{
-                  backgroundColor: button.text === '=' ? '#4caf50' : '#2196f3',
+            <Box 
+              sx={{ 
+                mb: 2, 
+                p: 2, 
+                backgroundColor: 'white',
+                borderRadius: 1,
+                minHeight: '60px'
+              }}
+            >
+              <Typography variant="h4" align="right" sx={{ wordBreak: 'break-all' }}>
+                {display}
+              </Typography>
+              <Typography variant="caption" align="right" display="block" color="text.secondary">
+                {equation}
+              </Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Button 
+                fullWidth 
+                variant="contained" 
+                onClick={handleClear}
+                sx={{ 
+                  mb: 1,
+                  backgroundColor: '#ff9800',
                   '&:hover': {
-                    backgroundColor: button.text === '=' ? '#43a047' : '#1976d2'
+                    backgroundColor: '#f57c00'
                   }
                 }}
               >
-                {button.text}
+                Clear
               </Button>
-            ))}
-          </Box>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 1,
-            }}
-          >
-            <Button
-              variant="contained"
-              onClick={() => handleQuickCalcOpen('tip')}
-              sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
-            >
-              Tip
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleQuickCalcOpen('interest')}
-              sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
-            >
-              Interest
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleQuickCalcOpen('bmi')}
-              sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
-            >
-              BMI
-            </Button>
-          </Box>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: 1,
+                  mb: 2
+                }}
+              >
+                {buttons.map((button, index) => (
+                  <Button
+                    key={index}
+                    fullWidth
+                    variant="contained"
+                    onClick={button.handler}
+                    sx={{
+                      backgroundColor: button.text === '=' ? '#4caf50' : '#2196f3',
+                      '&:hover': {
+                        backgroundColor: button.text === '=' ? '#43a047' : '#1976d2'
+                      }
+                    }}
+                  >
+                    {button.text}
+                  </Button>
+                ))}
+              </Box>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: 1,
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => handleQuickCalcOpen('tip')}
+                  sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
+                >
+                  Tip
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleQuickCalcOpen('interest')}
+                  sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
+                >
+                  Interest
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleQuickCalcOpen('bmi')}
+                  sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
+                >
+                  BMI
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleQuickCalcOpen('heat-index')}
+                  sx={{ backgroundColor: '#9c27b0', '&:hover': { backgroundColor: '#7b1fa2' } }}
+                >
+                  Heat Index
+                </Button>
+              </Box>
+            </Box>
+          </Paper>
         </Box>
-      </Paper>
+        <Box sx={{ flex: 1 }}>
+          <Weather />
+        </Box>
+      </Stack>
 
       <Dialog open={dialog.open} onClose={handleQuickCalcClose}>
         <DialogTitle>
           {dialog.type === 'tip' && 'Calculate Tip'}
           {dialog.type === 'interest' && 'Calculate Simple Interest'}
           {dialog.type === 'bmi' && 'Calculate BMI'}
+          {dialog.type === 'heat-index' && 'Calculate Heat Index'}
         </DialogTitle>
         <DialogContent>
           {renderDialogContent()}

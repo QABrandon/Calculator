@@ -1,6 +1,6 @@
-# React Calculator with Quick Calculations
+# React Calculator with Weather Widget
 
-A modern calculator built with React, TypeScript, and Material-UI that combines standard arithmetic operations with quick calculation features for common use cases.
+A modern calculator built with React, TypeScript, and Material-UI that combines standard arithmetic operations with quick calculation features and a real-time weather widget.
 
 ## Features
 
@@ -28,17 +28,34 @@ A modern calculator built with React, TypeScript, and Material-UI that combines 
   - Input weight (kg) and height (cm)
   - Shows BMI calculation formula
 
+- **Heat Index Calculator**
+  - Calculate "feels like" temperature
+  - Based on temperature and humidity
+  - Uses Rothfusz regression formula
+
+### Weather Widget
+- Real-time weather information
+- Search by city name
+- Displays:
+  - Current temperature
+  - Weather description
+  - Humidity levels
+  - Weather icon
+- Powered by OpenWeatherMap API
+
 ## Technology Stack
 - React 18
 - TypeScript
 - Material-UI
 - mathjs (for calculations)
+- OpenWeatherMap API (for weather data)
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm (v6 or higher)
+- OpenWeatherMap API key
 
 ### Installation
 1. Clone the repository
@@ -52,12 +69,18 @@ A modern calculator built with React, TypeScript, and Material-UI that combines 
    npm install
    ```
 
-3. Start the development server
+3. Set up environment variables
+   Create a `.env` file in the root directory and add your OpenWeatherMap API key:
+   ```
+   REACT_APP_OPENWEATHER_API_KEY=your_api_key_here
+   ```
+
+4. Start the development server
    ```bash
    npm start
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser
+5. Open [http://localhost:3000](http://localhost:3000) to view it in the browser
 
 ## Usage
 
@@ -68,10 +91,15 @@ A modern calculator built with React, TypeScript, and Material-UI that combines 
 - Press C to clear
 
 ### Quick Calculations
-1. Click on the desired quick calculation button (Tip, Interest, or BMI)
+1. Click on the desired quick calculation button (Tip, Interest, BMI, or Heat Index)
 2. Enter the required values in the modal
 3. Click Calculate to see the result
 4. The result and calculation formula will be displayed in the main calculator screen
+
+### Weather Widget
+1. Enter a city name in the search box
+2. Press Enter or click Search
+3. View current weather conditions for the specified location
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2024-02-14
+
+### Added
+- Heat Index calculator for weather-related calculations
+  - Calculate "feels like" temperature based on actual temperature and humidity
+  - Uses Rothfusz regression formula for accurate results
+  - Input fields for temperature (°F) and relative humidity (%)
+  - Displays calculation result with descriptive equation
+
 ## [1.1.0] - 2024-02-13
 
 ### Added
@@ -61,4 +70,22 @@ All notable changes to this project will be documented in this file.
 - Built with React 18 and TypeScript
 - Uses Material-UI for components
 - Uses mathjs for calculations
-- State management with React hooks (useState) 
+- State management with React hooks (useState)
+
+## [2.0.0] - 2024-03-21
+
+### Added
+- Improved weather data accuracy using two-step API process (Geocoding + Weather)
+- Real-time weather data verification for multiple cities
+- Console logging for weather data debugging
+- Support for specific US city formats (e.g., "Pensacola,FL,US")
+
+### Fixed
+- City names now correctly display in English
+- Weather descriptions consistently show in English
+- More accurate location data using coordinates
+
+### Changed
+- Updated Weather component to use OpenWeatherMap's Geocoding API
+- Enhanced error handling for city searches
+- Improved UI layout and responsiveness 
